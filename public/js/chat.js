@@ -7,9 +7,13 @@ socket.on('message', (message) => {
 document.querySelector('#message-form').addEventListener('submit', (e) => {
     e.preventDefault()
     // the name after elements is the name we give for the name attri. of input
-    console.log(e.target.elements.message)
+    
     const message = e.target.elements.message.value
-    socket.emit('sendMessage', message)
+    socket.emit('sendMessage', message, (error) => {
+        error 
+            ? console.log(error)
+            : console.log('The message was delivered', message)
+    })
 })
 
 document.querySelector('#send-location').addEventListener('click', (e) => {
@@ -18,7 +22,13 @@ document.querySelector('#send-location').addEventListener('click', (e) => {
         : navigator.geolocation.getCurrentPosition(position => {
             socket.emit('sendLocation', { 
                 lattitude:position.coords.latitude, 
-                longitude: position.coords.longitude })
+                longitude: position.coords.longitude 
+            }, (error) => {
+                // client acknowledgement fn
+                error 
+                    ? console.log(error)
+                    : console.log('Location was delivered')
+            })
         })
 
 })
