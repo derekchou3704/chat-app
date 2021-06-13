@@ -8,11 +8,14 @@
 </head>
 <body>
     <h1>Chat App</h1>
-    <button id="increment">+1</button>
+
     <form id="message-form" action="message">
         <input name="message" id="message-input" type="text" placeholder="Type sth...">
         <button type="submit">Send</button>
     </form>
+
+    <button id="send-location">Send Location</button>
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/chat.js"></script>
 </body>
