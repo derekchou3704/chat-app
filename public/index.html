@@ -5,21 +5,36 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat app</title>
+    <link rel="icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <h1>Chat App</h1>
-    <div id="messages"></div>
+    <div class="chat">
+        <div class="chat__sidebar">
 
-    <form id="message-form" action="message">
-        <input name="message" id="message-input" type="text" placeholder="Type sth...">
-        <button type="submit">Send</button>
-    </form>
+        </div>
+        <div class="chat__main">
+            <div id="messages" class="chat__messages"></div>
 
-    <button id="send-location">Send Location</button>
+            <div class="compose">
+                <form id="message-form" action="message">
+                    <input name="message" id="message-input" type="text" placeholder="Type sth...">
+                    <button type="submit">Send</button>
+                </form>
+
+                <button id="send-location">Send Location</button>
+            </div>
+        </div>
+    </div>
+    
 
     <script id="message-template" type="text/html">
-        <div>
-            <p>{{message}} - <span>{{createdAt}}</span></p>
+        <div class="message">
+            <p>
+                <span class="message__name">User Name</span>
+                <span class="message__meta">{{createdAt}}</span>
+            </p>
+            <p>{{message}}</p>
         </div>
     </script>
 
