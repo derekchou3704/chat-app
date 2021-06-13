@@ -3,6 +3,7 @@ const http = require('http')
 const express = require('express')
 const socketio = require('socket.io')
 const Filter = require('bad-words')
+const { generateMessage, generateLocationMessage } = require('./utils/messages')
 // const hbs = require('hbs')
 
 const app = express()
@@ -20,7 +21,7 @@ app.use(express.static(publicDirectoryPath))
 
 io.on('connection', (socket) => {
     console.log('New websocket connection')
-    socket.emit('message', 'Welcome')
+    socket.emit('message', generateMessage('Welcome!'))
 
     // emit to all users eccept current socket
     socket.broadcast.emit('message', 'A current user has joined') 
@@ -32,19 +33,19 @@ io.on('connection', (socket) => {
         }
 
         // emit to each clients
-        io.emit('message', message)
+        io.emit('message', generateMessage(message))
         callback() 
     })
 
     socket.on('sendLocation', (coords, callback) => {
         const url = `https://google.com/maps?q=${coords.lattitude},${coords.longitude}`
-        socket.emit('locationMessage', url)
+        socket.emit('locationMessage', generateLocationMessage(url))
         callback()
     })
 
     // disconnect is a built-in event in socket.io (so is connection)
     socket.on('disconnect', () => {
-        io.emit('message', 'A user has left')
+        io.emit('message', generateMessage('A user has left'))
     })
 })
 
