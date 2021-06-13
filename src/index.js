@@ -21,8 +21,17 @@ io.on('connection', (socket) => {
     console.log('New websocket connection')
     socket.emit('message', 'Welcome')
 
+    // emit to all users eccept current socket
+    socket.broadcast.emit('message', 'A current user has joined') 
+
     socket.on('sendMessage', message => {
-        io.emit('message', message)
+        // emit to each clients
+        io.emit('message', message) 
+    })
+
+    // disconnect is a built-in event in socket.io (so is connection)
+    socket.on('disconnect', () => {
+        io.emit('message', 'A user has left')
     })
 })
 
