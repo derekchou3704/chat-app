@@ -30,18 +30,40 @@ const getQueryProperties = (query) => {
 }
 const { username, room } = getQueryProperties(location.search)
 
+const autoScroll = () => {
+    // New message element
+    const $newMessage = $messages.lastElementChild
+
+    // Height of the last message
+    const newMessageStyles = getComputedStyle($newMessage)
+    const newMessageMargin = parseInt(newMessageStyles.marginBottom)
+    const newMessageHeight = $newMessage.offsetHeight + newMessageMargin
+
+    // Visible Height
+    const visibleHeight = $messages.offsetHeight
+
+    // Height of message container
+    const containerHeight = $messages.scrollHeight
+
+    // How far has user scrolled
+    const scrollOffset = $messages.scrollTop + visibleHeight
+
+    if (containerHeight - newMessageHeight <= scrollOffset) {
+        $messages.scrollTop = $messages.scrollHeight
+    }
+}
+
 socket.on('message', (message) => {
-    // console.log(message)
     const html = Mustache.render(messageTemplate, {
         username: message.username,
         message: message.text,
         createdAt: moment(message.createdAt).format('YYYY-MMM-DD HH:mm:ss')
     })
     $messages.insertAdjacentHTML('beforeend', html)
+    autoScroll()
 })
 
 socket.on('locationMessage', (message) => {
-    console.log(message)
     const html = Mustache.render(locationMessageTemplate, {
         username: message.username,
         url: message.url,
@@ -71,9 +93,7 @@ $messageForm.addEventListener('submit', (e) => {
         $messageFormButton.removeAttribute('disabled')
         $messageFormInput.value = ''
         $messageFormInput.focus()
-        error 
-            ? console.log(error)
-            : console.log('The message was delivered', message)
+        if (error) console.log(err) 
     })
 })
 
