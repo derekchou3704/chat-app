@@ -11,8 +11,26 @@ const $messages = document.querySelector('#messages')
 const messageTemplate = document.querySelector('#message-template').innerHTML
 const locationMessageTemplate = document.querySelector('#location-message-template').innerHTML
 
+// Options
+// Browser does not support requirejs so the algorithm must be placed here
+const getQueryProperties = (query) => {
+    if (query) {
+        const keyValuePairs = {}
+        let queryString = query.substring(1)
+        let pairs = queryString.split('&')
+        for ( let i = 0; i < pairs.length; i++ ) {
+            let pair = pairs[i].split('=')
+            let key = decodeURIComponent(pair[0])
+            let value = decodeURIComponent(pair[1])
+            keyValuePairs[key] = value
+        }
+        return keyValuePairs
+    }
+}
+const { username, room } = getQueryProperties(location.search)
+
 socket.on('message', (message) => {
-    console.log(message)
+    // console.log(message)
     const html = Mustache.render(messageTemplate, {
         message: message.text,
         createdAt: moment(message.createdAt).format('YYYY-MMM-DD HH:mm:ss')
@@ -63,3 +81,12 @@ $sendLocation.addEventListener('click', (e) => {
         })
 
 })
+
+
+socket.emit('join', { username, room })
+
+
+
+
+
+
