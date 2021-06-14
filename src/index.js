@@ -33,6 +33,11 @@ io.on('connection', (socket) => {
         // socket.broadcast.to: emit to all users in the specific room eccept the current socket
         socket.broadcast.to(user.room).emit('message', generateMessage('ChatAppBot', `${user.username} has joined!`))
 
+        io.to(user.room).emit('roomData', {
+            room: user.room,
+            users: getUsersInRoom(user.room)
+        })
+
         callback() // Without any arguments => w.o. any errors
     })
 
@@ -65,6 +70,10 @@ io.on('connection', (socket) => {
 
         if (user) {
             io.to(user.room).emit('message', generateMessage('ChatAppBot', `${user.username} has left`))
+            io.to(user.room).emit('roomData', {
+                room: user.room,
+                users: getUsersInRoom(user.room)
+            })
         }
     })
 })
