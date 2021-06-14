@@ -32,6 +32,7 @@ const { username, room } = getQueryProperties(location.search)
 socket.on('message', (message) => {
     // console.log(message)
     const html = Mustache.render(messageTemplate, {
+        username: message.username,
         message: message.text,
         createdAt: moment(message.createdAt).format('YYYY-MMM-DD HH:mm:ss')
     })
@@ -41,6 +42,7 @@ socket.on('message', (message) => {
 socket.on('locationMessage', (message) => {
     console.log(message)
     const html = Mustache.render(locationMessageTemplate, {
+        username: message.username,
         url: message.url,
         createdAt: moment(message.createdAt).format('YYYY-MMM-DD HH:mm:ss')
     })
@@ -66,7 +68,7 @@ $messageForm.addEventListener('submit', (e) => {
     })
 })
 
-$sendLocation.addEventListener('click', (e) => {
+$sendLocation.addEventListener('click', () => {
     !navigator.geolocation 
         ? alert('Geolocation is not supported on current browser')
         : navigator.geolocation.getCurrentPosition(position => {
@@ -83,7 +85,12 @@ $sendLocation.addEventListener('click', (e) => {
 })
 
 
-socket.emit('join', { username, room })
+socket.emit('join', { username, room }, (error) => {
+    if (error) {
+        alert(error)
+        location.href = './'
+    }
+})
 
 
 
